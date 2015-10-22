@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tests_for_assignment>
     <file_test_mapping source_code_file_name="Example.java">
-        <junit_test>TestExample</junit_test>
+        <junit_test>WhenExampling</junit_test>
     </file_test_mapping>
     <file_test_mapping source_code_file_name="HelloWorld.java">
-        <junit_test>TestHelloWorld</junit_test>
+        <junit_test>WhenHelloWorlding</junit_test>
     </file_test_mapping>
 </tests_for_assignment>

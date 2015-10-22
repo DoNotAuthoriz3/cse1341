@@ -1,4 +1,6 @@
 import com.sun.javaws.exceptions.InvalidArgumentException;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,6 +12,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 //import org.junit.runner.JUnitCore;
 //import org.junit.runner.Result;
@@ -76,8 +80,10 @@ public class AssignmentTester
 
          // verify that the program compiles
          JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-         int result = compiler.run(null, null, null, argument);
-         System.out.println("Compile result code = " + result);
+         String currentDirectory;
+         currentDirectory = System.getProperty("user.dir");
+         int compilationResult = compiler.run(null, null, null, currentDirectory + File.separator + argument);
+         System.out.println("Compile result code = " + compilationResult);
 
          String[] className = argument.split("\\.java");
 
@@ -85,16 +91,16 @@ public class AssignmentTester
 
          // run the tests
          Class<JUnitTest> testClass = getNameOfTestClassFor(argument);
-         JUnitTest test = testClass.getConstructor(JUnitTest.class).newInstance();
-//         JUnitCore junit = new JUnitCore();
-//         Result result = junit.run(test);
+         JUnitCore junit = new JUnitCore();
+         // why can run not be overloaded to take a single class? WHY?!
+         Result testResult = junit.run( new Class<?>[] {testClass} );
+         System.out.println("Tests succeeded: " + testResult.wasSuccessful());
       }
       // At this point, regardless of the exception type the outcome is the same, so might as well just catch the
       // superclass.
       catch (Exception ex)
       {
          System.out.println("Error testing " + argument);
-         System.out.println(ex.toString());
          ex.printStackTrace();
       }
    }
@@ -140,11 +146,19 @@ public class AssignmentTester
                {
                   // this is such a horrifyingly fragile design even I don't understand why I don't bother to do better
                   // oh wait yes I do it's because the XML Java API IS TERRIBLE and I haven't seen a betterer one.
+                  // WHY DOES JAVA SUCK?!
                   String testName = element.getChildNodes().item(1).getTextContent();
 
-                  // yay reflection
+                  String currentDirectory;
+                  currentDirectory = System.getProperty("user.dir") + File.separator;
+
+                  // this is absoluteyl awful workaround to get a properly formatted URL for a string containing a file path.
+                  URL[] urls = { new File(currentDirectory).toURI().toURL() };
+                  URLClassLoader urlcl = new URLClassLoader(urls);
+
+                  // yay reflection (finally)
                   Class<JUnitTest> testClass;
-                  testClass = (Class<JUnitTest>) Class.forName(testName);
+                  testClass = (Class<JUnitTest>) urlcl.loadClass(testName);
 
                   return testClass;
                }
@@ -153,8 +167,9 @@ public class AssignmentTester
       }
       // lazily handling this for now. TODO: fixit.
       catch (Exception e) { e.printStackTrace(); }
+
       // if we got here then we failed to find the correct test, one way or another.
-      finally { throw new TestNotFoundException(); }
+      throw new TestNotFoundException();
    }
 
    // TODO: make this descriptive
