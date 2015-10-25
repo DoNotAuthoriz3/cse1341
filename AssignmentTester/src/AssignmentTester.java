@@ -15,9 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-//import org.junit.runner.JUnitCore;
-//import org.junit.runner.Result;
-
 /**
  * Created by dfischer on 9/8/2015.
  */
@@ -43,14 +40,12 @@ public class AssignmentTester
          System.out.println("or i.e. java AssignmentTest Hello.java Age.java SimpleCalculator.java Next.java");
       }
 
-      System.out.println("Entering for loop");
       // test all of the programs passed in via command line arguments
       for (String argument : args)
       {
          try
          {
-            System.out.println("Running test for " + argument);
-            runAllTestsFor(argument);
+            System.out.println("Grade for " + argument + ": " + runAllTestsFor(argument));
          } catch (Exception ex)
          {
             System.out.println("Error: failed while attempting to test " + argument);
@@ -66,9 +61,10 @@ public class AssignmentTester
     *
     * @param argument
     */
-   public static void runAllTestsFor (String argument) throws NoSuchMethodException, IllegalAccessException,
+   public static int runAllTestsFor (String argument) throws NoSuchMethodException, IllegalAccessException,
          InvocationTargetException, InstantiationException
    {
+      double grade = 0;
       try
       {
          // all Java source code files must have a .java suffix
@@ -84,17 +80,24 @@ public class AssignmentTester
          currentDirectory = System.getProperty("user.dir");
          int compilationResult = compiler.run(null, null, null, currentDirectory + File.separator + argument);
          System.out.println("Compile result code = " + compilationResult);
-
-         String[] className = argument.split("\\.java");
-
-         System.out.println("className[0] is " + className[0]);
+         if (compilationResult != 0)
+         {
+            return 0;
+         }
 
          // run the tests
          Class<JUnitTest> testClass = getNameOfTestClassFor(argument);
          JUnitCore junit = new JUnitCore();
          // why can run not be overloaded to take a single class? WHY?!
          Result testResult = junit.run( new Class<?>[] {testClass} );
-         System.out.println("Tests succeeded: " + testResult.wasSuccessful());
+         int numTests = testResult.getRunCount();
+         int failedTests = testResult.getFailureCount();
+         System.out.println("Tests succeeded: " + (numTests - failedTests) + " / " + numTests);
+         grade = (double) (numTests - failedTests) / numTests;
+
+         // 40% of the grade is for the program compiling correctly; 60% is for it working correctly
+         grade = Math.round(grade * 60);
+         grade += 40;
       }
       // At this point, regardless of the exception type the outcome is the same, so might as well just catch the
       // superclass.
@@ -103,6 +106,8 @@ public class AssignmentTester
          System.out.println("Error testing " + argument);
          ex.printStackTrace();
       }
+
+      return (int) grade;
    }
 
    /**
