@@ -41,6 +41,16 @@ public class AssignmentTester
       }
 
       // test all of the programs passed in via command line arguments
+      testPrograms(args);
+   }
+
+   /**
+    * testPrograms will run all of the tests configured for each java file passed in
+    *
+    * @param args
+    */
+   public static void testPrograms(String[] args)
+   {
       for (String argument : args)
       {
          try
