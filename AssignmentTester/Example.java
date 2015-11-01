@@ -23,7 +23,7 @@ public class Example
         System.out.println("You are " + age + " years old!");
     }
 
-    public static void munn (String... args)
+    public static void main (String... args)
     {
         System.out.print("Hello. What is your name? ");
         Scanner input = new Scanner(System.in);

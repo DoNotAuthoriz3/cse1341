@@ -50,7 +50,7 @@ public class WhenExampling extends BaseTest implements JUnitTest {
         String output = "";
 
         // This is how you pass strings to the program you are test
-        in = new ByteArrayInputStream("Aaron\n27\n".getBytes());
+        in = new ByteArrayInputStream("Aaron\n\n\n".getBytes());
         System.setIn(in);
         // each time you must set input = a new Byte... and then System.setIn on the new object
 
@@ -59,20 +59,20 @@ public class WhenExampling extends BaseTest implements JUnitTest {
         it's possibly to just supply all input for the program in one big byte array at the beginning, then let the
         program run and sort out the necessary outputs along the way. But this better mimics a user interacting with
         the program. */
-        MyRun mun = new MyRun();
-        mun.setOut(out);
-        mun.run();
+        MyRun main = new MyRun();
+        main.setOut(out);
+        main.run();
 
         String textToVerify = "Aaron";
-        String x = waitForText(out, textToVerify, 30000);
-        assertTrue("Did not find name", x.contains("Aaron"));
+        String programOutput = waitForText(out, textToVerify, 30000);
+        assertTrue("Did not find name", programOutput.contains("Aaron"));
 
         /* this is entirely for debugging to see what the output is. Note that I use System.err, not System.out;
         System.out is being redirected so you would not see it on the console. System.err is not. This is very hacky
         but makes debugging quite a lot easier. If you don't need to see what the output is (i.e. you finished
         the test and it works) you don't need to use a helper variable. Instead you could just call
         assertTrue("Did not find output", waitForText(out, textToVerify, 30000).contains(textToVerify)); */
-        System.err.println("program output is: " + output);
+//        System.err.println("program output is: " + output);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class WhenExampling extends BaseTest implements JUnitTest {
         String output = "";
 
         // This is how you pass strings to the program you are test
-        in = new ByteArrayInputStream("Aaron\n27\n".getBytes());
+        in = new ByteArrayInputStream("Aaron\n27\n\n".getBytes());
         System.setIn(in);
         // each time you must set input = a new Byte... and then System.setIn on the new object
 
@@ -91,21 +91,21 @@ public class WhenExampling extends BaseTest implements JUnitTest {
         it's possibly to just supply all input for the program in one big byte array at the beginning, then let the
         program run and sort out the necessary outputs along the way. But this better mimics a user interacting with
         the program. */
-        MyRunRun muhn = new MyRunRun();
-        muhn.setOut(out);
-        muhn.run();
+        MyRun main = new MyRun();
+        main.setOut(out);
+        main.run();
 
         String textToVerify = "27";
-        String x = waitForText(out, textToVerify, 30000);
-        assertTrue("Did not find name", x.contains("Aaron"));
-        assertTrue("Did not find age", x.contains("27"));
+        String programOutput = waitForText(out, textToVerify, 30000);
+        assertTrue("Did not find name", programOutput.contains("Aaron"));
+        assertTrue("Did not find age", programOutput.contains("27"));
 
         /* this is entirely for debugging to see what the output is. Note that I use System.err, not System.out;
         System.out is being redirected so you would not see it on the console. System.err is not. This is very hacky
         but makes debugging quite a lot easier. If you don't need to see what the output is (i.e. you finished
         the test and it works) you don't need to use a helper variable. Instead you could just call
         assertTrue("Did not find output", waitForText(out, textToVerify, 30000).contains(textToVerify)); */
-        System.err.println("program output is: " + output);
+//        System.err.println("program output is: " + output);
     }
 
 
@@ -125,22 +125,22 @@ public class WhenExampling extends BaseTest implements JUnitTest {
         it's possibly to just supply all input for the program in one big byte array at the beginning, then let the
         program run and sort out the necessary outputs along the way. But this better mimics a user interacting with
         the program. */
-        MyRunRunRun munn = new MyRunRunRun();
-        munn.setOut(out);
-        munn.run();
+        MyRun main = new MyRun();
+        main.setOut(out);
+        main.run();
 
         String textToVerify = "male";
-        String x = waitForText(out, textToVerify, 30000);
-        assertTrue("Did not find output", x.contains("Aaron"));
-        assertTrue("Did not find output", x.contains("27"));
-        assertTrue("Did not find output", x.contains("male"));
+        String programOutput = waitForText(out, textToVerify, 30000);
+        assertTrue("Did not find output", programOutput.contains("Aaron"));
+        assertTrue("Did not find output", programOutput.contains("27"));
+        assertTrue("Did not find output", programOutput.contains("male"));
 
         /* this is entirely for debugging to see what the output is. Note that I use System.err, not System.out;
         System.out is being redirected so you would not see it on the console. System.err is not. This is very hacky
         but makes debugging quite a lot easier. If you don't need to see what the output is (i.e. you finished
         the test and it works) you don't need to use a helper variable. Instead you could just call
         assertTrue("Did not find output", waitForText(out, textToVerify, 30000).contains(textToVerify)); */
-        System.err.println("program output is: " + output);
+//        System.err.println("program output is: " + output);
     }
 
     /* waits for the input string for up to 30000 seconds; returns true if the input string is found in the System.out
@@ -156,29 +156,5 @@ public class WhenExampling extends BaseTest implements JUnitTest {
             currentOut += out.toString();
         }
         return currentOut;
-    }
-
-    private class MyRun implements Runnable
-    {
-        public void setIn(InputStream in) { System.setIn(in); }
-        public void setOut(ByteArrayOutputStream out) { System.setOut(new PrintStream(out)); }
-
-        public void run() { Example.mun(new String[0]); }
-    }
-
-    private class MyRunRun implements Runnable
-    {
-        public void setIn(InputStream in) { System.setIn(in); }
-        public void setOut(ByteArrayOutputStream out) { System.setOut(new PrintStream(out)); }
-
-        public void run() { Example.muhn(new String[0]); }
-    }
-
-    private class MyRunRunRun implements Runnable
-    {
-        public void setIn(InputStream in) { System.setIn(in); }
-        public void setOut(ByteArrayOutputStream out) { System.setOut(new PrintStream(out)); }
-
-        public void run() { Example.munn(new String[0]); }
     }
 }

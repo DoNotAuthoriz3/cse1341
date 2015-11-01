@@ -28,4 +28,13 @@ public abstract class BaseTest
         System.setIn(origIn);
         System.setOut(origOut);
     }
+
+    public class MyRun implements Runnable
+    {
+        public void setIn(InputStream in) { System.setIn(in); }
+        public void setOut(ByteArrayOutputStream out) { System.setOut(new PrintStream(out)); }
+
+        public void run() {
+            Example.main(new String[0]); }
+    }
 }
