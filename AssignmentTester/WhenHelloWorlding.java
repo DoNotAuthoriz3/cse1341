@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by the.machine on 10/6/2015.
  */
-public class WhenHelloWorlding implements JUnitTest
+public class WhenHelloWorlding extends BaseTest implements JUnitTest
 {
     @Test
     public void printHelloWorld()
